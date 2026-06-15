@@ -1,0 +1,57 @@
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+type Domino struct {
+	kiri, kanan int
+	balak       bool
+}
+
+type Dominoes struct {
+	kartu [28]Domino
+	sisa  int
+}
+
+func kocokKartu(d *Dominoes) {
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(d.sisa, func(i, j int) {
+		d.kartu[i], d.kartu[j] = d.kartu[j], d.kartu[i]
+	})
+}
+
+func ambilKartu(d *Dominoes) Domino {
+	d.sisa--
+	return d.kartu[d.sisa]
+}
+
+func gambarKartu(k Domino, suit int) int {
+	if suit == 1 {
+		return k.kiri
+	}
+	return k.kanan
+}
+
+func nilaiKartu(k Domino) int {
+	return k.kiri + k.kanan
+}
+
+func main() {
+	var d Dominoes
+	d.kartu[0] = Domino{4, 6, false} // contoh kartu
+	d.sisa = 1
+
+	kocokKartu(&d)
+
+	k := ambilKartu(&d)
+
+	fmt.Printf("Kartu: [%d|%d]\n", k.kiri, k.kanan)
+	fmt.Println("Sisi kiri :", gambarKartu(k, 1))
+	fmt.Println("Sisi kanan:", gambarKartu(k, 2))
+	fmt.Println("Nilai kartu:", nilaiKartu(k))
+	fmt.Println("Balak?", k.balak)
+	fmt.Println("Sisa kartu:", d.sisa)
+}
